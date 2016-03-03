@@ -45,3 +45,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+frontend-angular/.idea
+frontend-angular/target
+frontend-angular/node_modules

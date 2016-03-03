@@ -1,0 +1,157 @@
+<div class="well well-sm">
+    <form role="form" class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-4  col-md-offset-3">
+                <input class="form-control" id="querystring" type="text" placeholder="待办" ng-model='querystring'/>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-default" type="button" ng-click="getTodoList()">查询</button>
+                <button class="btn btn-info" type="button" ng-click="showEditModal()">添加</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="well well-sm text-center" ng-show="isLoading">
+    加载中...请稍后...<i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>
+</div>
+<div class="well well-sm text-center" ng-show="paginatedTodos.length == 0 && !isLoading">
+    无数据！
+</div>
+<div ng-show="paginatedTodos.length > 0 && !isLoading" class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th class="col-md-6">待办事项</th>
+            <th class="col-md-2">创建时间</th>
+            <th class="col-md-2">上次签到时间</th>
+            <th class="col-md-2"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in paginatedTodos" ng-class="item.todoType | todoFilter">
+            <td ng-click="showDetailModal(item)">{{ item.todoName }}</td>
+            <td>{{ item.createdTime }}</td>
+            <td>{{ item.logTime }}</td>
+            <td>
+                <a href ng-click="logTodo(item)" ng-show="item.logTime | todayFilter"><i class="glyphicon glyphicon-repeat"></i></a>
+                <a href ng-click="showEditModal(item)"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href ng-click="delete(item, $index)"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href ng-click="logListModal(item)"><i class="glyphicon glyphicon-list"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <uib-pagination boundary-links="true" max-size="maxSize" total-items="todos.length" ng-model="currentPage"
+                    class="pagination-sm"
+                    previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;"
+                    last-text="&raquo;" ng-show="todos.length > numPerPage"></uib-pagination>
+</div>
+
+<script type="text/ng-template" id="detailModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">查看</h3>
+    </div>
+
+    <form class="form-horizontal">
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">待办事项 :</label>
+                <div class="col-sm-8">
+                    <pre class="form-control-static">{{ item.todoName }}</pre>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">类型 :</label>
+                <div class="col-sm-8">
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-model="item.todoType" uib-btn-radio="1">默认</label>
+                        <label class="btn btn-info" ng-model="item.todoType" uib-btn-radio="2">提示</label>
+                        <label class="btn btn-warning" ng-model="item.todoType" uib-btn-radio="3">紧急</label>
+                        <label class="btn btn-danger" ng-model="item.todoType" uib-btn-radio="4">重要</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">创建时间 :</label>
+                <div class="col-sm-8">
+                    <pre class="form-control-static">{{ item.createdTime }}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="form-group text-center">
+                <button class="btn btn-info" type="button" ng-click="close()">关闭</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="editModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">{{ title }}</h3>
+    </div>
+
+    <form class="form-horizontal" name="editForm" novalidate>
+        <div class="modal-body">
+            <div class="form-group" show-errors>
+                <label class="col-sm-4 control-label">待办事项 :</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" ng-model="item.todoName" name="todoName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">类型 :</label>
+                <div class="col-sm-8">
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-model="item.todoType" uib-btn-radio="1">默认</label>
+                        <label class="btn btn-info" ng-model="item.todoType" uib-btn-radio="2">提示</label>
+                        <label class="btn btn-warning" ng-model="item.todoType" uib-btn-radio="3">紧急</label>
+                        <label class="btn btn-danger" ng-model="item.todoType" uib-btn-radio="4">重要</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-show="item.id">
+                <label class="col-sm-4 control-label">创建时间 :</label>
+                <div class="col-sm-8">
+                    <pre class="form-control-static">{{ item.createdTime }}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-danger" ng-click="save()">提交</button>
+                <button class="btn btn-info" type="button" ng-click="close()">关闭</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="logListModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">签到记录</h3>
+    </div>
+
+    <form class="form-horizontal">
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="logItem in logList">
+                            {{ logItem.logTime }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="form-group text-center">
+                <button class="btn btn-info" type="button" ng-click="close()">关闭</button>
+            </div>
+        </div>
+    </form>
+</script>

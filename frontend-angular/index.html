@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="webApp">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Give up</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css"/>
+    <!-- build:css css/webapp.css -->
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <!-- endbuild -->
+
+    <script type="text/javascript" src="lib/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular-route.min.js"></script>
+    <script type="text/javascript" src="lib/ui-bootstrap-tpls-1.1.0.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <ng-include src="'templates/navTabs.html'"></ng-include>
+
+    <div class="ng-view"></div>
+</div>
+<!-- build:js js/webapp.js -->
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/httpInterceptor.js"></script>
+
+<script type="text/javascript" src="js/navTabs.js"></script>
+<script type="text/javascript" src="js/filter.js"></script>
+
+<script type="text/javascript" src="js/func/app.todo.js"></script>
+<script type="text/javascript" src="js/func/app.giveup.js"></script>
+<!-- endbuild -->
+</body>
+</html>

@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="text-center">
+        <h1>看看你，放弃了多少？</h1>
+    </div>
+</div>
+
+<nav class="navbar navbar-default" role="navigation" ng-controller="TabsCtrl">
+    <div class="navbar-header">
+        <ul class="nav navbar-nav">
+            <li ng-class="{active : workspace.active}" ng-repeat="workspace in workspaces">
+                <a href="{{ workspace.url }}" ng-click="setTab(workspace.id)">{{ workspace.name }}</a>
+            </li>
+        </ul>
+    </div>
+</nav>
