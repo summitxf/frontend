@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Modal } from 'react-bootstrap';
+import { Modal, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as TodoActions from '../actions/todo.action.js'
@@ -19,12 +19,12 @@ export default class TodoLogModal extends Component {
     render() {
         const { showLogModal, logList } = this.props;
 
-        let datas = <li className="list-group-item"> 无数据！ </li>
+        let datas = <ListGroupItem> 无数据！ </ListGroupItem>;
         if (logList && logList.length > 0) {
             datas = logList.map((logItem, idx)=>
-                    <li key={logItem.id} className="list-group-item">
+                    <ListGroupItem key={logItem.id}>
                         {logItem.logTime}
-                    </li>
+                    </ListGroupItem>
             )
         }
 
@@ -34,13 +34,9 @@ export default class TodoLogModal extends Component {
                     <Modal.Title className="text-center">签到记录</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="form-group">
-                        <div className="col-sm-6 col-sm-offset-3">
-                            <ul className="list-group">
-                                {datas}
-                            </ul>
-                        </div>
-                    </div>
+                    <ListGroup>
+                        {datas}
+                    </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
                     <button className="btn btn-info" type="button" onClick={this.close}>关闭</button>
