@@ -3,13 +3,13 @@ module.exports = function (grunt) {
     var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
     grunt.initConfig({
-        pkg    : grunt.file.readJSON('package.json'),
-        connect: {
+        pkg       : grunt.file.readJSON('package.json'),
+        connect   : {
             server: {
                 options: {
                     hostname  : 'localhost',
-                    port      : 9091,
-                    keepalive : true,
+                    port      : 9090,
+                    //keepalive : true,
                     open      : true,
                     base      : '.',
                     middleware: function (connect, options) {
@@ -31,29 +31,51 @@ module.exports = function (grunt) {
                     }
                 },
                 proxies: [{
-                    context: '/backend-service/cxf',
+                    context: '/backend-service',
                     host   : 'localhost',
                     port   : 8080
                 }]
             }
         },
-        //清除目录
-        clean  : {
-            all: ['target/**']
+        clean     : {
+            all: ['target/**', 'build/**']
         },
-        copy   : {
+        babel     : {
+            options: {
+                //sourceMap: true,
+                presets: ['es2015', 'react', 'stage-2']
+            },
+            dist   : {
+                files: [{
+                    expand: true,
+                    cwd   : 'js/',
+                    src   : ['**/*.js'],
+                    dest  : 'build/'
+                }]
+            }
+        },
+        browserify: {
+            dev: {
+                files: {
+                    "build/<%= pkg.name %>.js": "build/index.js"
+                }
+            },
+            prod: {
+                files: {
+                    "build/<%= pkg.name %>.js": "build/index.js"
+                }
+            }
+        },
+        copy      : {
             main: {
                 files: [
-                    {src: ['lib/cryptojs/*'], dest: 'target/frontend-angular/'},
-                    {src: ['lib/*.min.js', 'lib/*.min.css'], dest: 'target/frontend-angular/'},
-                    {src: ['fonts/*'], dest: 'target/frontend-angular/'},
-                    {src: ['img/*'], dest: 'target/frontend-angular/'},
-                    {src: ['templates/**'], dest: 'target/frontend-angular/'},
-                    {src: ['*.html'], dest: 'target/frontend-angular/'}
+                    {src: ['build/<%= pkg.name %>.js'], dest: 'target/webapp/js/<%= pkg.name %>.js'},
+                    {src: ['*.html'], dest: 'target/webapp/'}
                 ]
             }
         },
-        concat : {
+        // react js use browserify
+        concat    : {
             options: {
                 separator: '\n /* ----- separator ----- */\n',
                 banner   : '\n /* ----- banner ----- */\n',
@@ -61,33 +83,38 @@ module.exports = function (grunt) {
             },
             webapp : {
                 src : ['js/*.js', 'js/**/*.js'],
-                dest: 'target/frontend-angular/js/<%= pkg.name %>.js'
+                dest: 'target/webapp/js/<%= pkg.name %>.js'
             }
         },
-        uglify : {
+        uglify    : {
             options: {
                 mangle: false,
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build  : {
-                src : 'target/frontend-angular/js/<%= pkg.name %>.js',
-                dest: 'target/frontend-angular/js/<%= pkg.name %>.js'
+                src : 'target/webapp/js/<%= pkg.name %>.js',
+                dest: 'target/webapp/js/<%= pkg.name %>.js'
             }
         },
-        //压缩CSS
-        cssmin : {
+        cssmin    : {
             options: {
                 shorthandCompacting: false,
                 roundingPrecision  : -1
             },
             target : {
                 files: {
-                    'target/frontend-angular/css/webapp.css': ['css/*.css']
+                    'target/webapp/css/<%= pkg.name %>.css': ['css/*.css']
                 }
             }
         },
-        usemin : {
-            html: ['target/frontend-angular/index.html']
+        usemin    : {
+            html: ['target/webapp/index.html']
+        },
+        watch     : {
+            babel: {
+                files: ['js/*.js','js/**/*.js'],
+                tasks: ['babel:dist', 'browserify:dev']
+            }
         }
     });
 
@@ -102,15 +129,23 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-usemin');
 
+    grunt.loadNpmTasks('grunt-babel');
+    grunt.loadNpmTasks("grunt-browserify");
+
     grunt.registerTask('default', [
+        'clean',
+        'babel',
+        'browserify:dev',
         'configureProxies:server',
-        'connect:server'
+        'connect:server',
+        'watch:babel'
     ]);
 
     grunt.registerTask('build', [
         'clean',
+        'babel',
+        'browserify:prod',
         'copy',
-        'concat',
         'uglify',
         'cssmin',
         'usemin'

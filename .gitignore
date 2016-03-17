@@ -49,3 +49,8 @@ Temporary Items
 frontend-angular/.idea
 frontend-angular/target
 frontend-angular/node_modules
+
+frontend-react/.idea
+frontend-react/target
+frontend-react/build
+frontend-react/node_modules
