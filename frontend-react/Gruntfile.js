@@ -57,7 +57,7 @@ module.exports = function (grunt) {
         browserify: {
             dev: {
                 files: {
-                    "build/<%= pkg.name %>.js": "build/index.js"
+                    "build/<%= pkg.name %>.js": "build/index.dev.js"
                 }
             },
             prod: {

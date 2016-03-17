@@ -106,7 +106,6 @@ export function listLog(item) {
 
 export function addTodo(item) {
     return dispatch => {
-        dispatch(closeModal());
         return fetch('/backend-service/cxf/todo', {
             method : 'POST',
             headers: TodoConst.FETCH_HEADERS,
