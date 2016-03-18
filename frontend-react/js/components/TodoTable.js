@@ -61,7 +61,7 @@ export default class TodoTable extends Component {
         if (item.logTime) {
             let d = new Date(item.logTime);
             let today = new Date();
-            return d.getYear() == today.getYear && d.getMonth() == today.getMonth && d.getDate() == today.getDate;
+            return !(d.getYear() == today.getYear() && d.getMonth() == today.getMonth() && d.getDate() == today.getDate());
         } else {
             return true;
         }

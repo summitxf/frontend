@@ -9,7 +9,8 @@ import DevTools from './containers/DevTools'
 
 const store = configureStore();
 
-let rootElement = document.getElementById('root')
+let rootElement = document.getElementById('root');
+
 render(
     <Provider store={store}>
         <div>
@@ -18,4 +19,4 @@ render(
         </div>
     </Provider>,
     rootElement
-)
+);
