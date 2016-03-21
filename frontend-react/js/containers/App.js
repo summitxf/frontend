@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react'
-import Todo from '../components/Todo.js'
-import NavTabs from '../components/NavTabs.js'
+import NavTabs from '../containers/NavTabs.js'
 
 export default class App extends Component {
     render() {
+        const { children } = this.props;
         return (
             <div>
                 <NavTabs/>
-                <Todo/>
+
+                <div className="app-container">
+                    {children}
+                </div>
             </div>
         )
     }

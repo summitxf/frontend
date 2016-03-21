@@ -30,7 +30,6 @@
     "redux-devtools": "^3.0.1",
     "redux-devtools-dock-monitor": "^1.0.1",
     "redux-devtools-log-monitor": "^1.0.2",
-    "redux-router": "^0.1.0",
     "redux-thunk": "^2.0.1"
   }
 }

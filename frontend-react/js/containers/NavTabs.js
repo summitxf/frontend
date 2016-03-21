@@ -1,17 +1,18 @@
 import React, { Component, PropTypes } from 'react'
 import { Navbar , Nav, NavItem } from 'react-bootstrap';
+import { browserHistory } from 'react-router'
 
 export default class NavTabs extends Component {
     render() {
         const workspaces = [
             {
                 id  : 1,
-                url : '#/todo/list',
+                url : 'todo',
                 name: '正在做'
             },
             {
                 id  : 2,
-                url : '#/giveup/list',
+                url : 'giveup',
                 name: '已经放弃'
             }
         ]
@@ -27,7 +28,8 @@ export default class NavTabs extends Component {
                     <Nav>
                         {
                             workspaces.map((workspace, idx)=>
-                                    <NavItem key={workspace.id} href={ workspace.url }>{ workspace.name }</NavItem>
+                                    <NavItem key={idx} href="#"
+                                             onClick={() => browserHistory.push(workspace.url)}>{ workspace.name }</NavItem>
                             )
                         }
                     </Nav>
